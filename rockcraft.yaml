@@ -1,0 +1,100 @@
+name: cups-rock
+base: ubuntu@22.04
+version: '0.1'
+summary: CUPS-based printing stack Rock
+description: Complete printing environment in a OCI container
+license: GPL-3.0
+platforms:
+    arm64:
+    amd64:
+    armhf:
+
+services:
+  cupsd:
+    command: /scripts/entrypoint.sh
+    override: replace
+    startup: enabled
+    on-success: shutdown
+    on-failure: shutdown
+
+parts:
+  cups:
+    source: https://github.com/OpenPrinting/cups.git
+    source-type: git
+    source-tag: 'v2.4.8'
+    source-depth: 1
+    plugin: autotools
+    build-packages:
+      - git
+      - sed
+      - curl
+      - perl-base
+      - patch
+      - autoconf
+      - automake
+      - libtool
+      - autotools-dev
+      - pkg-config
+      - g++
+      - libavahi-client-dev
+      - libavahi-common-dev
+      - libavahi-compat-libdnssd-dev
+      - libdbus-1-dev
+      - libgnutls28-dev
+      - libkrb5-dev
+      - libpam0g-dev
+      - libpaper-dev
+      - libsystemd-dev
+      - libusb-1.0-0-dev
+      - po4a
+      - po-debconf
+      - zlib1g-dev
+      - libapparmor-dev
+      - libsnapd-glib-dev
+    stage-packages:
+      - libusb-1.0-0
+      - libavahi-common3
+      - libavahi-client3
+      - libpaper1
+      - libsnapd-glib1
+      - libapparmor1
+    stage:
+      # The *.la file which gets installed by "make install" contains a
+      # wrong prefix, breaking parts of this rock which use this library
+      - -lib/lib*.la
+    prime:
+      - -etc/fonts
+      - -var
+      - -include
+      - -share/man
+      - -share/doc
+      - -share/lintian
+      - -usr/share/fonts
+      - -usr/share/man
+      - -usr/share/doc
+      - -usr/share/doc-base
+      - -usr/share/lintian
+      # Reported unused by rockcraft linter
+      - -lib/libcupsimage.*
+      - -usr/lib/*/libdconf.*
+      - -usr/lib/*/libicuio.*
+      - -usr/lib/*/libicutest.*
+      - -usr/lib/*/libicutu.*
+      - -usr/lib/*/libicui18n.*
+
+  scripts:
+    plugin: dump
+    source: scripts/
+    stage-packages:
+      - build-essential
+      - libssl-dev
+      - openssl
+    organize:
+      entrypoint.sh: /scripts/entrypoint.sh
+    override-prime: |
+      set -eux
+      craftctl default
+      # Ensure the entrypoint.sh script has executable permissions
+      if [ -f "$CRAFT_PRIME/scripts/entrypoint.sh" ]; then
+        chmod +x "$CRAFT_PRIME/scripts/entrypoint.sh"
+      fi
