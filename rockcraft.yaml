@@ -11,22 +11,59 @@ platforms:
 
 services:
   cupsd:
-    command: service cups start
+    command: /usr/sbin/cupsd
     override: replace
     on-failure: restart
     startup: enabled
 
 parts:
   cups:
-    plugin: nil
-    overlay-packages:
-      - cups
-
-  cupsd-config:
-    plugin: dump
-    source: .
-    organize:
-      cupsd.conf: etc/cups/cupsd.conf
-    after: [cups]
-    prime:
-      - etc/cups/cupsd.conf
+    source: https://github.com/OpenPrinting/cups.git
+    source-type: git
+    source-tag: 'v2.4.8'
+    source-depth: 1
+    plugin: autotools
+    build-packages:
+      - git
+      - sed
+      - curl
+      - perl-base
+      - patch
+      - autoconf
+      - automake
+      - libtool
+      - autotools-dev
+      - pkg-config
+      - g++
+      - libavahi-client-dev
+      - libavahi-common-dev
+      - libavahi-compat-libdnssd-dev
+      - libdbus-1-dev
+      - libgnutls28-dev
+      - libkrb5-dev
+      - libpam0g-dev
+      - libpaper-dev
+      - libsystemd-dev
+      - libusb-1.0-0-dev
+      - po4a
+      - po-debconf
+      - zlib1g-dev
+      - libapparmor-dev
+      - libsnapd-glib-dev
+    override-prime: |
+      set -eux
+      craftctl default
+      sed -i 's/Listen localhost:631/Listen 0.0.0.0:631/' ${CRAFT_PRIME}/etc/cups/cupsd.conf
+      sed -i 's/Browsing Off/Browsing On/' ${CRAFT_PRIME}/etc/cups/cupsd.conf
+      sed -i 's/<Location \/>/<Location \/>\n  Allow All/' ${CRAFT_PRIME}/etc/cups/cupsd.conf
+      sed -i 's/<Location \/admin>/<Location \/admin>\n  Allow All\n  Require user @SYSTEM/' ${CRAFT_PRIME}/etc/cups/cupsd.conf
+      sed -i 's/<Location \/admin\/conf>/<Location \/admin\/conf>\n  Allow All/' ${CRAFT_PRIME}/etc/cups/cupsd.conf
+      echo "ServerAlias *" >> ${CRAFT_PRIME}/etc/cups/cupsd.conf
+      echo "DefaultEncryption Never" >> ${CRAFT_PRIME}/etc/cups/cupsd.conf
+    stage-packages:
+      - libusb-1.0-0
+      - libavahi-common3
+      - libavahi-client3
+      - libpaper1
+      - libsnapd-glib1
+      - libapparmor1
