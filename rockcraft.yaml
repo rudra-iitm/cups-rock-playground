@@ -5,8 +5,6 @@ summary: CUPS-based printing stack Rock
 description: Complete printing environment in a OCI container
 license: Apache-2.0
 
-run-user: _daemon_
-
 platforms:
     arm64:
     amd64:
@@ -14,7 +12,10 @@ platforms:
 
 services:
   cupsd:
-    command: /usr/sbin/cupsd
+    command: /scripts/run-cupsd.sh
+    environment:
+      CUPSADMIN: "admin"
+      CUPSPASSWORD: "admin"
     override: replace
     on-failure: restart
     startup: enabled
@@ -81,15 +82,6 @@ parts:
       sed -i 's/<Location \/admin\/conf>/<Location \/admin\/conf>\n  Allow All/' ${CRAFT_PRIME}/etc/cups/cupsd.conf
       echo "ServerAlias *" >> ${CRAFT_PRIME}/etc/cups/cupsd.conf
       echo "DefaultEncryption Never" >> ${CRAFT_PRIME}/etc/cups/cupsd.conf
-
-      CUPSUSER=_daemon_
-      CUPSGROUP=_daemon_
-      # CUPSSYSTEMGROUP=lpadmin
-
-      sed -i 's/^\(\s*\)#\?\s*User\s\S\+\s*$/User '"$CUPSUSER"'/' ${CRAFT_PRIME}/etc/cups/cups-files.conf
-      sed -i 's/^\(\s*\)#\?\s*Group\s.*$/Group '"$CUPSGROUP"'/' ${CRAFT_PRIME}/etc/cups/cups-files.conf
-      # sed -i 's/^\(\s*\)#\?\s*SystemGroup\s.*$/SystemGroup '"$CUPSSYSTEMGROUP"' root:/' ${CRAFT_PRIME}/etc/cups/cups-files.conf
-
     stage-packages:
       - libusb-1.0-0
       - libavahi-common3
@@ -363,3 +355,16 @@ parts:
       - -usr/share/lintian
       - -usr/lib/*/libssl3.*
     after: [cups, qpdf, ghostscript, libcupsfilters, libppd]
+
+  scripts:
+    plugin: dump
+    source: scripts/
+    organize:
+      run-cupsd.sh: /scripts/run-cupsd.sh
+    override-prime: |
+      set -eux
+      craftctl default
+      # Ensure the entrypoint.sh script has executable permissions
+      if [ -f "$CRAFT_PRIME/scripts/run-cupsd.sh" ]; then
+        chmod +x "$CRAFT_PRIME/scripts/run-cupsd.sh"
+      fi
