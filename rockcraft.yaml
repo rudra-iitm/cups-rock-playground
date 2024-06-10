@@ -13,9 +13,6 @@ platforms:
 services:
   cupsd:
     command: /scripts/run-cupsd.sh
-    environment:
-      CUPSADMIN: "admin"
-      CUPSPASSWORD: "admin"
     override: replace
     on-failure: restart
     startup: enabled
@@ -78,10 +75,18 @@ parts:
       sed -i 's/Listen localhost:631/Listen 0.0.0.0:631/' ${CRAFT_PRIME}/etc/cups/cupsd.conf
       sed -i 's/Browsing Off/Browsing On/' ${CRAFT_PRIME}/etc/cups/cupsd.conf
       sed -i 's/<Location \/>/<Location \/>\n  Allow All/' ${CRAFT_PRIME}/etc/cups/cupsd.conf
-      sed -i 's/<Location \/admin>/<Location \/admin>\n  Allow All\n  Require user @SYSTEM/' ${CRAFT_PRIME}/etc/cups/cupsd.conf
-      sed -i 's/<Location \/admin\/conf>/<Location \/admin\/conf>\n  Allow All/' ${CRAFT_PRIME}/etc/cups/cupsd.conf
       echo "ServerAlias *" >> ${CRAFT_PRIME}/etc/cups/cupsd.conf
       echo "DefaultEncryption Never" >> ${CRAFT_PRIME}/etc/cups/cupsd.conf
+
+      sed -i '/<Location \/admin>/,/<\/Location>/s/Require user @SYSTEM/Allow All\n  Require user @SYSTEM @lpadmin/' ${CRAFT_PRIME}/etc/cups/cupsd.conf
+      sed -i '/<Location \/admin\/conf>/,/<\/Location>/s/Require user @SYSTEM/Allow All\n  Require user @SYSTEM @lpadmin/' ${CRAFT_PRIME}/etc/cups/cupsd.conf
+      sed -i '/<Location \/admin\/log>/,/<\/Location>/s/Require user @SYSTEM/Allow All\n  Require user @SYSTEM @lpadmin/' ${CRAFT_PRIME}/etc/cups/cupsd.conf
+      sed -i '/<Limit CUPS-Add-Modify-Printer CUPS-Delete-Printer CUPS-Add-Modify-Class CUPS-Delete-Class CUPS-Set-Default CUPS-Get-Devices>/,/<\/Limit>/ s/Require user @SYSTEM/Require user @SYSTEM @lpadmin/' ${CRAFT_PRIME}/etc/cups/cupsd.conf
+      
+      # sed -i 's/#Group lp/Group lpadmin/' ${CRAFT_PRIME}/etc/cups/cups-files.conf
+
+      # Starting cups in debug mode
+      sed -i 's/LogLevel warn/LogLevel debug/' ${CRAFT_PRIME}/etc/cups/cupsd.conf
     stage-packages:
       - libusb-1.0-0
       - libavahi-common3
