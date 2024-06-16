@@ -1,6 +1,6 @@
-name: cups-rock
+name: cups
 base: ubuntu@22.04
-version: '0.1'
+version: '0.1-dev'
 summary: CUPS-based printing stack Rock
 description: Complete printing environment in a OCI container
 license: Apache-2.0
@@ -360,7 +360,12 @@ parts:
       - -usr/share/lintian
       - -usr/lib/*/libssl3.*
     after: [cups, qpdf, ghostscript, libcupsfilters, libppd]
-
+    
+  avahi-daemon:
+    plugin: nil
+    overlay-packages:
+      - avahi-utils
+    
   scripts:
     plugin: dump
     source: scripts/
