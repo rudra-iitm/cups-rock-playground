@@ -23,6 +23,10 @@ parts:
     source-type: git
     source-tag: 'v2.4.8'
     source-depth: 1
+# ext:updatesnap
+#   version-format:
+#     lower-than: '3'
+#     no-9x-revisions: true
     plugin: autotools
     autotools-configure-parameters:
       - --prefix=/
@@ -118,6 +122,10 @@ parts:
     source-type: git
     source-tag: 'v11.9.0'
     source-depth: 1
+# ext:updatesnap
+#   version-format:
+#     lower-than: '12'
+#     no-9x-revisions: true
     plugin: cmake
     cmake-parameters:
       - -DCMAKE_INSTALL_PREFIX=/
@@ -157,6 +165,11 @@ parts:
     source-type: git
     source-tag: 'ghostpdl-10.03.0rc1_test'
     source-depth: 1
+# ext:updatesnap
+#   version-format:
+#     format: "ghostpdl-%M.%m.%R"
+#     lower-than: '11'
+#     no-9x-revisions: true
     plugin: autotools
     autotools-configure-parameters:
       - --prefix=/
@@ -202,6 +215,10 @@ parts:
     source-type: git
     source-tag: 2.0.0
     source-depth: 1
+# ext:updatesnap
+#   version-format:
+#     lower-than: '3'
+#     no-9x-revisions: true
     plugin: autotools
     autotools-configure-parameters:
       - --prefix=/
@@ -267,6 +284,10 @@ parts:
     source-type: git
     source-tag: 2.0.0
     source-depth: 1
+# ext:updatesnap
+#   version-format:
+#     lower-than: '3'
+#     no-9x-revisions: true
     plugin: autotools
     # We only need libppd itself
     autotools-configure-parameters:
@@ -317,6 +338,10 @@ parts:
     source-type: git
     source-tag: 2.0.0
     source-depth: 1
+# ext:updatesnap
+#   version-format:
+#     lower-than: '3'
+#     no-9x-revisions: true
     plugin: autotools
     autotools-configure-parameters:
       - --prefix=/
@@ -378,7 +403,7 @@ parts:
     override-prime: |
       set -eux
       craftctl default
-      # Ensure the entrypoint.sh script has executable permissions
+      # Ensure the run-cupsd.sh script has executable permissions
       if [ -f "$CRAFT_PRIME/scripts/run-cupsd.sh" ]; then
         chmod +x "$CRAFT_PRIME/scripts/run-cupsd.sh"
       fi
