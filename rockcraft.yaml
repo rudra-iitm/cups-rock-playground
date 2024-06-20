@@ -21,7 +21,7 @@ parts:
   cups:
     source: https://github.com/OpenPrinting/cups.git
     source-type: git
-    source-tag: 'v2.4.8'
+    source-tag: 'v2.4.10'
     source-depth: 1
 # ext:updatesnap
 #   version-format:
@@ -86,7 +86,7 @@ parts:
       sed -i '/<Location \/admin\/conf>/,/<\/Location>/s/Require user @SYSTEM/Allow All\n  Require user @SYSTEM @lpadmin/' ${CRAFT_PRIME}/etc/cups/cupsd.conf
       sed -i '/<Location \/admin\/log>/,/<\/Location>/s/Require user @SYSTEM/Allow All\n  Require user @SYSTEM @lpadmin/' ${CRAFT_PRIME}/etc/cups/cupsd.conf
       sed -i '/<Limit CUPS-Add-Modify-Printer CUPS-Delete-Printer CUPS-Add-Modify-Class CUPS-Delete-Class CUPS-Set-Default CUPS-Get-Devices>/,/<\/Limit>/ s/Require user @SYSTEM/Require user @SYSTEM @lpadmin/' ${CRAFT_PRIME}/etc/cups/cupsd.conf
-      
+
       # sed -i 's/#Group lp/Group lpadmin/' ${CRAFT_PRIME}/etc/cups/cups-files.conf
 
       # Starting cups in debug mode
@@ -120,7 +120,7 @@ parts:
   qpdf:
     source: https://github.com/qpdf/qpdf/
     source-type: git
-    source-tag: 'v11.9.0'
+    source-tag: 'v11.9.1'
     source-depth: 1
 # ext:updatesnap
 #   version-format:
@@ -385,7 +385,7 @@ parts:
       - -usr/share/lintian
       - -usr/lib/*/libssl3.*
     after: [cups, qpdf, ghostscript, libcupsfilters, libppd]
-    
+
   avahi-daemon:
     plugin: nil
     overlay-packages:
@@ -394,7 +394,7 @@ parts:
       - libnss-mdns
       - mdns-scan
       - dbus
-    
+
   scripts:
     plugin: dump
     source: scripts/
