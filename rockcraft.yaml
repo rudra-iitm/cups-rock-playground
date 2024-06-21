@@ -11,11 +11,18 @@ platforms:
     armhf:
 
 services:
+  dbus:
+    command: /scripts/run-dbus.sh
+    override: replace
+    on-failure: restart
+    startup: enabled
+
   cupsd:
     command: /scripts/run-cupsd.sh
     override: replace
     on-failure: restart
     startup: enabled
+    after: [dbus]
 
 parts:
   cups:
@@ -400,10 +407,15 @@ parts:
     source: scripts/
     organize:
       run-cupsd.sh: /scripts/run-cupsd.sh
+      run-dbus.sh: /scripts/run-dbus.sh
     override-prime: |
       set -eux
       craftctl default
       # Ensure the run-cupsd.sh script has executable permissions
       if [ -f "$CRAFT_PRIME/scripts/run-cupsd.sh" ]; then
         chmod +x "$CRAFT_PRIME/scripts/run-cupsd.sh"
+      fi
+      # Ensure the run-dbus.sh script has executable permissions
+      if [ -f "$CRAFT_PRIME/scripts/run-dbus.sh" ]; then
+        chmod +x "$CRAFT_PRIME/scripts/run-dbus.sh"
       fi
