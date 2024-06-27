@@ -88,6 +88,7 @@ jobs:
           CUPS_ADMIN: "print"
         run: |
           # Add a printer to the CUPS server using lpadmin
+          sudo docker exec cups avahi-browse -a
           sudo docker exec -u "${CUPS_ADMIN}" cups lpadmin -p testprinter \
             -v ipps://myprinter._ipps._tcp.local/ -E -m everywhere
 
