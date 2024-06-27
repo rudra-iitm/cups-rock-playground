@@ -82,6 +82,7 @@ jobs:
         run: |
           # Start the ippeveprinter service for printing
           screen -S ippeveprinter-session -d -m /usr/sbin/ippeveprinter -f application/pdf myprinter
+          sudo docker exec cups avahi-browse -rt _ipps._tcp
 
       - name: Add CUPS printer
         env:
