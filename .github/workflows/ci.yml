@@ -42,6 +42,7 @@ jobs:
       - name: Install Dependencies for Testing
         run: |
           # Install necessary dependencies
+          sudo snap install --devmode --channel edge skopeo
           sudo snap install docker
           sudo apt-get update
           sudo apt-get install -y curl cups-ipp-utils libcups2-dev screen
@@ -57,7 +58,7 @@ jobs:
         run: |
           # Build Docker image from the latest .rock artifact
           ROCK="$(ls *.rock | tail -n 1)"
-          sudo rockcraft.skopeo --insecure-policy copy oci-archive:"${ROCK}" docker-daemon:cups:latest
+          sudo skopeo --insecure-policy copy oci-archive:"${ROCK}" docker-daemon:cups:latest
 
       - name: Run CUPS container
         env:
