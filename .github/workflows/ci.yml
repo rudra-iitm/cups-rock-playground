@@ -84,12 +84,16 @@ jobs:
           screen -S ippeveprinter-session -d -m /usr/sbin/ippeveprinter -f application/pdf myprinter
 
       - name: Add CUPS printer
+        env:
+          CUPS_ADMIN: "print"
         run: |
           # Add a printer to the CUPS server using lpadmin
           sudo docker exec -u "${CUPS_ADMIN}" cups lpadmin -p testprinter \
             -v ipps://myprinter._ipps._tcp.local/ -E -m everywhere
 
       - name: Test printing files
+        env:
+          CUPS_ADMIN: "print"
         run: |
           # Test printing a file from the host to the CUPS server
           echo "Test Print Job" | sudo tee host-testfile.txt > /dev/null
