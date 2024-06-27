@@ -68,7 +68,7 @@ jobs:
           # Run CUPS container with environment variables for admin credentials
           sudo docker run --rm -d --name cups -p 8080:631 \
             -e CUPS_ADMIN="${CUPS_ADMIN}" -e CUPS_PASSWORD="${CUPS_PASSWORD}" \
-            cups-rock
+            cups:latest
 
       - name: Wait for CUPS to be ready
         run: |
