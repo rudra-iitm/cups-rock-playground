@@ -90,9 +90,16 @@ jobs:
         run: |
           # Add a printer to the CUPS server using lpadmin
           PRINTER_URI=$(sudo docker exec cups avahi-browse -rt _ipp._tcp | grep "^=;" | awk -F';' '{print $8}' | head -n 1)
-          exho "PRINTER_URI: ${PRINTER_URI}"
+          echo "PRINTER_URI: ${PRINTER_URI}"
           sudo docker exec -u "${CUPS_ADMIN}" cups lpadmin -p testprinter \
             -v ipps://myprinter._ipps._tcp.local/ -E -m everywhere
+
+          
+          # Print CUPS error log if lpadmin fails
+          if [ $? -ne 0 ]; then
+            sudo docker exec cups tail -n 100 /var/log/cups/error_log
+            exit 1
+          fi
 
       - name: Test printing files
         env:
