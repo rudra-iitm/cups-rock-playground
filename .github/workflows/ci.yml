@@ -45,6 +45,7 @@ jobs:
           sudo snap install --devmode --channel edge skopeo
           sudo snap install docker
           sudo apt-get update
+          sudo apt-get install -y avahi-utils
           sudo apt-get install -y curl cups-ipp-utils libcups2-dev screen
 
       - name: Ensure Docker Daemon is Running
@@ -89,7 +90,9 @@ jobs:
           BROWSE_PID=$!
           sleep 10
           kill $BROWSE_PID
-          cat avahi_output.txt
+
+      - name: Display avahi-browse output
+        run: cat avahi_output.txt
 
       - name: Run avahi-browse inside CUPS container
         run: |
