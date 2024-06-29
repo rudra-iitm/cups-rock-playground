@@ -82,7 +82,12 @@ jobs:
         run: |
           # Start the ippeveprinter service for printing
           screen -S ippeveprinter-session -d -m /usr/sbin/ippeveprinter -f application/pdf myprinter
-          sudo docker exec cups avahi-browse -rt _ipps._tcp
+
+          avahi-browse -a > avahi_output.txt 2>&1 &
+          BROWSE_PID=$!
+          sleep 10
+          kill $BROWSE_PID
+          cat avahi_output.txt
 
       - name: Add CUPS printer
         env:
@@ -93,13 +98,6 @@ jobs:
           echo "PRINTER_URI: ${PRINTER_URI}"
           sudo docker exec -u "${CUPS_ADMIN}" cups lpadmin -p testprinter \
             -v ipps://myprinter._ipps._tcp.local/ -E -m everywhere
-
-          
-          # Print CUPS error log if lpadmin fails
-          if [ $? -ne 0 ]; then
-            sudo docker exec cups tail -n 100 /var/log/cups/error_log
-            exit 1
-          fi
 
       - name: Test printing files
         env:
