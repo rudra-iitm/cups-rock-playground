@@ -1,0 +1,32 @@
+name: Run Avahi Browse
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  run-avahi-browse:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Avahi utilities
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y avahi-utils
+          sudo apt-get install -y curl cups-ipp-utils libcups2-dev screen
+
+      - name: Start ippeveprinter
+        run: |
+          # Start the ippeveprinter service for printing
+          screen -S ippeveprinter-session -d -m /usr/sbin/ippeveprinter -f application/pdf myprinter
+
+      - name: Run avahi-browse -a with timeout
+        run: timeout 10s avahi-browse -a
