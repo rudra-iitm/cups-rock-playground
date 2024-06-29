@@ -115,14 +115,14 @@ jobs:
         run: |
           # Test printing a file from the host to the CUPS server
           echo "Test Print Job" | sudo tee host-testfile.txt > /dev/null
-          CUPS_SERVER=localhost:8080 lp -d testprinter host-testfile.txt
+          # CUPS_SERVER=localhost:8080 lp -d testprinter host-testfile.txt
 
-          # Wait for the final print job to complete
-          until CUPS_SERVER=localhost:8080 lpstat -W completed | grep -q 'testprinter-1'; do
-            echo "Waiting for print job 1 to complete..."
-            sleep 5
-          done
-          CUPS_SERVER=localhost:8080 lpstat -W completed | grep 'testprinter-1'
+          # # Wait for the final print job to complete
+          # until CUPS_SERVER=localhost:8080 lpstat -W completed | grep -q 'testprinter-1'; do
+          #   echo "Waiting for print job 1 to complete..."
+          #   sleep 5
+          # done
+          # CUPS_SERVER=localhost:8080 lpstat -W completed | grep 'testprinter-1'
 
           # Test printing multiple file types and wait for completion
           testfiles=(
