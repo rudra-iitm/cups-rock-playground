@@ -83,6 +83,8 @@ jobs:
           # Start the ippeveprinter service for printing
           screen -S ippeveprinter-session -d -m /usr/sbin/ippeveprinter -f application/pdf myprinter
 
+      - name: Run avahi-browse -a in background and kill after 10 seconds
+        run: |
           avahi-browse -a > avahi_output.txt 2>&1 &
           BROWSE_PID=$!
           sleep 10
