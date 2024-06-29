@@ -89,6 +89,14 @@ jobs:
           kill $BROWSE_PID
           cat avahi_output.txt
 
+      - name: Run avahi-browse inside CUPS container
+        run: |
+          # Run avahi-browse inside the CUPS container
+          sudo docker exec -d cups sh -c "avahi-browse -a > /tmp/avahi_output.txt 2>&1 &"
+          sleep 10
+          sudo docker exec cups sh -c "pkill avahi-browse"
+          sudo docker exec cups cat avahi_output.txt
+
       - name: Add CUPS printer
         env:
           CUPS_ADMIN: "print"
