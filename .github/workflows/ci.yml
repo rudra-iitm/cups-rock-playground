@@ -45,7 +45,7 @@ jobs:
           sudo snap install docker
           sudo apt-get update
           sudo apt-get install -y avahi-utils
-          sudo apt-get install -y curl cups-ipp-utils libcups2-dev screen
+          sudo apt-get install -y curl cups-ipp-utils cups-client screen
 
       - name: Ensure Docker Daemon is Running
         run: |
@@ -98,14 +98,14 @@ jobs:
         run: |
           # Test printing a file from the host to the CUPS server
           echo "Test Print Job" | sudo tee host-testfile.txt > /dev/null
-          # CUPS_SERVER=localhost:8080 lp -d testprinter host-testfile.txt
+          CUPS_SERVER=localhost:8080 lp -d testprinter host-testfile.txt
 
-          # # Wait for the final print job to complete
-          # until CUPS_SERVER=localhost:8080 lpstat -W completed | grep -q 'testprinter-1'; do
-          #   echo "Waiting for print job 1 to complete..."
-          #   sleep 5
-          # done
-          # CUPS_SERVER=localhost:8080 lpstat -W completed | grep 'testprinter-1'
+          # Wait for the final print job to complete
+          until CUPS_SERVER=localhost:8080 lpstat -W completed | grep -q 'testprinter-1'; do
+            echo "Waiting for print job 1 to complete..."
+            sleep 5
+          done
+          CUPS_SERVER=localhost:8080 lpstat -W completed | grep 'testprinter-1'
 
           # Test printing multiple file types from inside container and wait for completion
           testfiles=(
@@ -118,11 +118,11 @@ jobs:
 
           for i in "${!testfiles[@]}"; do
             sudo docker exec -u "${CUPS_ADMIN}" cups lp -d testprinter "${testfiles[i]}"
-            until sudo docker exec -u "${CUPS_ADMIN}" cups lpstat -W completed | grep -q "testprinter-$((i+1))"; do
-              echo "Waiting for print job $((i+1)) to complete..."
+            until sudo docker exec -u "${CUPS_ADMIN}" cups lpstat -W completed | grep -q "testprinter-$((i+2))"; do
+              echo "Waiting for print job $((i+2)) to complete..."
               sleep 5
             done
-            sudo docker exec -u "${CUPS_ADMIN}" cups lpstat -W completed | grep "testprinter-$((i+1))"
+            sudo docker exec -u "${CUPS_ADMIN}" cups lpstat -W completed | grep "testprinter-$((i+2))"
           done
 
       - name: Stop CUPS container
