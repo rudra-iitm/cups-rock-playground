@@ -100,15 +100,12 @@ jobs:
           sudo docker exec -d cups sh -c "avahi-browse -a > /tmp/avahi_output.txt 2>&1 &"
           sleep 10
           sudo docker exec cups sh -c "pkill avahi-browse"
-          sudo docker exec cups cat avahi_output.txt
+          sudo docker exec cups cat /tmp/avahi_output.txt
 
       - name: Add CUPS printer
         env:
           CUPS_ADMIN: "print"
         run: |
-          # Add a printer to the CUPS server using lpadmin
-          PRINTER_URI=$(sudo docker exec cups avahi-browse -rt _ipp._tcp)
-          echo "PRINTER_URI: ${PRINTER_URI}"
           sudo docker exec -u "${CUPS_ADMIN}" cups lpadmin -p testprinter \
             -v ipps://myprinter._ipps._tcp.local/ -E -m everywhere
 
