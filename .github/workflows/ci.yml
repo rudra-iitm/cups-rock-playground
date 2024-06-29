@@ -42,7 +42,7 @@ jobs:
       - name: Install Dependencies for Testing
         run: |
           # Install necessary dependencies
-          sudo snap install --devmode --channel edge skopeo
+          sudo snap install rockcraft --classic
           sudo snap install docker
           sudo apt-get update
           sudo apt-get install -y avahi-utils
@@ -59,7 +59,7 @@ jobs:
         run: |
           # Build Docker image from the latest .rock artifact
           ROCK="$(ls *.rock | tail -n 1)"
-          sudo skopeo --insecure-policy copy oci-archive:"${ROCK}" docker-daemon:cups:latest
+          sudo rockcraft.skopeo --insecure-policy copy oci-archive:"${ROCK}" docker-daemon:cups:latest
 
       - name: Run CUPS container
         env:
@@ -83,24 +83,25 @@ jobs:
         run: |
           # Start the ippeveprinter service for printing
           screen -S ippeveprinter-session -d -m /usr/sbin/ippeveprinter -f application/pdf myprinter
-
-      - name: Run avahi-browse -a in background and kill after 10 seconds
-        run: |
-          avahi-browse -a > avahi_output.txt 2>&1 &
-          BROWSE_PID=$!
           sleep 10
-          kill $BROWSE_PID
 
-      - name: Display avahi-browse output
-        run: cat avahi_output.txt
+      # - name: Run avahi-browse -a in background and kill after 10 seconds
+      #   run: |
+      #     avahi-browse -a > avahi_output.txt 2>&1 &
+      #     BROWSE_PID=$!
+      #     sleep 10
+      #     kill $BROWSE_PID
 
-      - name: Run avahi-browse inside CUPS container
-        run: |
-          # Run avahi-browse inside the CUPS container
-          sudo docker exec -d cups sh -c "avahi-browse -a > /tmp/avahi_output.txt 2>&1 &"
-          sleep 10
-          sudo docker exec cups sh -c "pkill avahi-browse"
-          sudo docker exec cups cat /tmp/avahi_output.txt
+      # - name: Display avahi-browse output
+      #   run: cat avahi_output.txt
+
+      # - name: Run avahi-browse inside CUPS container
+      #   run: |
+      #     # Run avahi-browse inside the CUPS container
+      #     sudo docker exec -d cups sh -c "avahi-browse -a > /tmp/avahi_output.txt 2>&1 &"
+      #     sleep 10
+      #     sudo docker exec cups sh -c "pkill avahi-browse"
+      #     sudo docker exec cups cat /tmp/avahi_output.txt
 
       - name: Add CUPS printer
         env:
