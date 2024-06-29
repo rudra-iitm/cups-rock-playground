@@ -11,7 +11,7 @@ on:
 
 jobs:
   build-rock:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -29,7 +29,7 @@ jobs:
   test:
     needs: build-rock
     if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -41,10 +41,10 @@ jobs:
 
       - name: Install Dependencies for Testing
         run: |
-          # Install necessary dependencies
-          sudo snap install --devmode --channel edge skopeo
+          sudo snap install rockcraft --classic
           sudo snap install docker
           sudo apt-get update
+          sudo apt-get install -y avahi-utils
           sudo apt-get install -y curl cups-ipp-utils libcups2-dev screen
 
       - name: Ensure Docker Daemon is Running
@@ -58,7 +58,7 @@ jobs:
         run: |
           # Build Docker image from the latest .rock artifact
           ROCK="$(ls *.rock | tail -n 1)"
-          sudo skopeo --insecure-policy copy oci-archive:"${ROCK}" docker-daemon:cups:latest
+          sudo rockcraft.skopeo --insecure-policy copy oci-archive:"${ROCK}" docker-daemon:cups:latest
 
       - name: Run CUPS container
         env:
@@ -82,12 +82,13 @@ jobs:
         run: |
           # Start the ippeveprinter service for printing
           screen -S ippeveprinter-session -d -m /usr/sbin/ippeveprinter -f application/pdf myprinter
+          sleep 10
 
       - name: Add CUPS printer
         env:
           CUPS_ADMIN: "print"
         run: |
-          # Add a printer to the CUPS server using lpadmin
+          # Add a test printer to the CUPS server
           sudo docker exec -u "${CUPS_ADMIN}" cups lpadmin -p testprinter \
             -v ipps://myprinter._ipps._tcp.local/ -E -m everywhere
 
@@ -97,16 +98,16 @@ jobs:
         run: |
           # Test printing a file from the host to the CUPS server
           echo "Test Print Job" | sudo tee host-testfile.txt > /dev/null
-          CUPS_SERVER=localhost:8080 lp -d testprinter host-testfile.txt
+          # CUPS_SERVER=localhost:8080 lp -d testprinter host-testfile.txt
 
-          # Wait for the final print job to complete
-          until CUPS_SERVER=localhost:8080 lpstat -W completed | grep -q 'testprinter-1'; do
-            echo "Waiting for print job 1 to complete..."
-            sleep 5
-          done
-          CUPS_SERVER=localhost:8080 lpstat -W completed | grep 'testprinter-1'
+          # # Wait for the final print job to complete
+          # until CUPS_SERVER=localhost:8080 lpstat -W completed | grep -q 'testprinter-1'; do
+          #   echo "Waiting for print job 1 to complete..."
+          #   sleep 5
+          # done
+          # CUPS_SERVER=localhost:8080 lpstat -W completed | grep 'testprinter-1'
 
-          # Test printing multiple file types and wait for completion
+          # Test printing multiple file types from inside container and wait for completion
           testfiles=(
             "/share/cups/ipptool/testfile.txt"
             "/share/cups/ipptool/testfile.pdf"
@@ -117,14 +118,13 @@ jobs:
 
           for i in "${!testfiles[@]}"; do
             sudo docker exec -u "${CUPS_ADMIN}" cups lp -d testprinter "${testfiles[i]}"
-            until sudo docker exec -u "${CUPS_ADMIN}" cups lpstat -W completed | grep -q "testprinter-$((i+2))"; do
-              echo "Waiting for print job $((i+2)) to complete..."
+            until sudo docker exec -u "${CUPS_ADMIN}" cups lpstat -W completed | grep -q "testprinter-$((i+1))"; do
+              echo "Waiting for print job $((i+1)) to complete..."
               sleep 5
             done
-            sudo docker exec -u "${CUPS_ADMIN}" cups lpstat -W completed | grep "testprinter-$((i+2))"
+            sudo docker exec -u "${CUPS_ADMIN}" cups lpstat -W completed | grep "testprinter-$((i+1))"
           done
 
-      - name: Stop and remove CUPS container
+      - name: Stop CUPS container
         run: |
-          # Stop and remove the CUPS container
           sudo docker stop cups

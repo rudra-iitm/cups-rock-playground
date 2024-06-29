@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-rock:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -26,7 +26,7 @@ jobs:
   publish-rock:
     needs: build-rock
     if: github.ref_name == 'main'
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -38,7 +38,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          sudo snap install --devmode --channel edge skopeo
+          sudo snap install rockcraft --classic
           sudo snap install docker
           sudo snap install yq
 
@@ -61,7 +61,7 @@ jobs:
           IMAGE="$(yq '.name' rockcraft.yaml)"
           VERSION="$(yq '.version' rockcraft.yaml)"
           ROCK="$(ls *.rock | tail -n 1)"
-          sudo skopeo --insecure-policy copy oci-archive:"${ROCK}" docker-daemon:"${USERNAME}/${IMAGE}:${VERSION}"
+          sudo rockcraft.skopeo --insecure-policy copy oci-archive:"${ROCK}" docker-daemon:"${USERNAME}/${IMAGE}:${VERSION}"
           docker tag ${USERNAME}/${IMAGE}:${VERSION} ${USERNAME}/${IMAGE}:latest
           docker push ${USERNAME}/${IMAGE}:${VERSION}
           docker push ${USERNAME}/${IMAGE}:latest
