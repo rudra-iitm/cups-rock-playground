@@ -135,11 +135,11 @@ jobs:
 
           for i in "${!testfiles[@]}"; do
             sudo docker exec -u "${CUPS_ADMIN}" cups lp -d testprinter "${testfiles[i]}"
-            until sudo docker exec -u "${CUPS_ADMIN}" cups lpstat -W completed | grep -q "testprinter-$((i+2))"; do
-              echo "Waiting for print job $((i+2)) to complete..."
+            until sudo docker exec -u "${CUPS_ADMIN}" cups lpstat -W completed | grep -q "testprinter-$((i+1))"; do
+              echo "Waiting for print job $((i+1)) to complete..."
               sleep 5
             done
-            sudo docker exec -u "${CUPS_ADMIN}" cups lpstat -W completed | grep "testprinter-$((i+2))"
+            sudo docker exec -u "${CUPS_ADMIN}" cups lpstat -W completed | grep "testprinter-$((i+1))"
           done
 
       - name: Stop and remove CUPS container
