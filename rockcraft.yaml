@@ -1,6 +1,6 @@
 name: cups
 base: ubuntu@22.04
-version: '0.1-dev'
+version: '2.4.10-1'
 summary: CUPS-based printing stack Rock
 description: Complete printing environment in a OCI container
 license: Apache-2.0
