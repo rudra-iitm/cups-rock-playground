@@ -1,9 +1,6 @@
-name: Pack and Publish OCI Image to Docker Registry with Edge Tag
+name: Pack and Publish OCI Image to Docker Registry with Stable Tag
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
 
 jobs:
@@ -61,5 +58,7 @@ jobs:
           IMAGE="$(yq '.name' rockcraft.yaml)"
           VERSION="$(yq '.version' rockcraft.yaml)"
           ROCK="$(ls *.rock | tail -n 1)"
-          sudo rockcraft.skopeo --insecure-policy copy oci-archive:"${ROCK}" docker-daemon:"${USERNAME}/${IMAGE}:${VERSION}-edge"
-          docker push ${USERNAME}/${IMAGE}:${VERSION}-edge
+          sudo rockcraft.skopeo --insecure-policy copy oci-archive:"${ROCK}" docker-daemon:"${USERNAME}/${IMAGE}:${VERSION}-stable"
+          docker tag ${USERNAME}/${IMAGE}:${VERSION}-stable ${USERNAME}/${IMAGE}:latest
+          docker push ${USERNAME}/${IMAGE}:${VERSION}-stable
+          docker push ${USERNAME}/${IMAGE}:latest
