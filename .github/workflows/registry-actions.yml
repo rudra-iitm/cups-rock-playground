@@ -4,10 +4,13 @@ on:
   push:
     branches:
       - main
+  create:
+    tags:
+      - '*'
   workflow_dispatch:
     inputs:
       workflow_choice:
-        description: 'Choose which workflow to run (edge or stable)'
+        description: 'Choose Release Channel'
         required: true
         default: 'edge'
         type: choice
@@ -34,7 +37,7 @@ jobs:
 
   publish-rock-edge:
     needs: build-rock
-    if: github.ref_name == 'main' && github.event.inputs.workflow_choice == 'edge'
+    if: github.ref_name == 'main' && github.event_name == 'push' && github.event.inputs.workflow_choice == 'edge'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -75,7 +78,7 @@ jobs:
 
   publish-rock-stable:
     needs: build-rock
-    if: github.ref_name == 'main' && github.event.inputs.workflow_choice == 'stable'
+    if: (github.ref_type == 'tag') || (github.ref_name == 'main' && github.event.inputs.workflow_choice == 'stable')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
