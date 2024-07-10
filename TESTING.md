@@ -85,6 +85,12 @@ CUPS_SERVER=localhost:<port> lpstat -W completed
 ```
 
 #### From Inside the Container
+##### To test printing files without creating any print queue
+Print a file present inside container without creating print queue
+```sh
+sudo docker exec -u "${CUPS_ADMIN}" cups lp -d myprinter /share/cups/ipptool/testfile.txt
+```
+
 ##### To test printing files from inside the container:
 1. Copy the file inside the container:
     ```sh
