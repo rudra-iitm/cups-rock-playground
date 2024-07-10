@@ -34,7 +34,7 @@ jobs:
 
   publish-rock-edge:
     needs: build-rock
-    if: github.ref_name == 'main' && github.event.inputs.workflow_choice == 'edge'
+    if: github.ref_name == 'main' && (github.event.inputs.workflow_choice == 'edge' || github.event_name == 'push')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
