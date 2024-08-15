@@ -38,7 +38,7 @@ CUPS_PASSWORD="print"
 ```sh
 sudo docker run --rm -d --name cups -p <port>:631 \
     -e CUPS_ADMIN="${CUPS_ADMIN}" -e CUPS_PASSWORD="${CUPS_PASSWORD}" \
-    rudraiitm/cups:latest
+    openprinting/cups:latest
 ```
 
 Alternatively:
