@@ -3,7 +3,7 @@ name: Push new tag update to stable branch
 on:
   schedule:
     # Daily for now
-    - cron: "9 7 * * *"
+    - cron: '9 7 * * *'
   workflow_dispatch:
 
 jobs:
@@ -12,9 +12,9 @@ jobs:
     steps:
       - name: Checkout this repo
         uses: actions/checkout@v3
-      - name: Run desktop-snaps action
+      - name: Run desktop-snaps action  
         uses: ubuntu/desktop-snaps@stable
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           repo: ${{ github.repository }}
-          rock-version-schema: 'v(\d+\.\d+\.\d+)'
+          version-schema: 'v(\d+\.\d+\.\d+)'
