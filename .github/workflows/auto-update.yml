@@ -24,7 +24,7 @@ jobs:
       - name: Checkout this repo
         uses: actions/checkout@v3
       - name: Run desktop-snaps action
-        uses: ubuntu/desktop-snaps@stable
+        uses: rudra-iitm/desktop-snaps@testing
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           repo: ${{ github.repository }}
@@ -37,8 +37,9 @@ jobs:
       - name: Checkout this repo
         uses: actions/checkout@v3
       - name: Run desktop-snaps action
-        uses: ubuntu/desktop-snaps@stable
+        uses: rudra-iitm/desktop-snaps@testing
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           repo: ${{ github.repository }}
           rock-version-schema: 'v(\d+\.\d+\.\d+)'
+          yaml-path: 'rock/rockcraft.yaml'
