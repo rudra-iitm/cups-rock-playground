@@ -23,6 +23,7 @@ on:
 jobs:
   build-rock:
     runs-on: ubuntu-latest
+    if: github.actor == 'github-actions[bot]'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -41,7 +42,7 @@ jobs:
 
   publish-rock-edge:
     needs: build-rock
-    if: github.ref_name == 'main' && (github.event.inputs.workflow_choice == 'edge' || github.event.inputs.workflow_choice == 'both' || github.event_name == 'push')
+    if: github.actor == 'github-actions[bot]' || github.ref_name == 'main' && (github.event.inputs.workflow_choice == 'edge' || github.event.inputs.workflow_choice == 'both' || github.event_name == 'push')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
