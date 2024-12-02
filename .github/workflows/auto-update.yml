@@ -16,36 +16,25 @@ on:
           - both
 
 jobs:
-  update-snapcraft-yaml:
-    if: ${{ github.event_name == 'schedule' || github.event.inputs.workflow_choice == 'snapcraft' || github.event.inputs.workflow_choice == 'both' }}
+  update-yamls:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout this repo
         uses: actions/checkout@v3
+
       - name: Run desktop-snaps action (Snapcraft)
+        if: ${{ github.event_name == 'schedule' || github.event.inputs.workflow_choice == 'snapcraft' || github.event.inputs.workflow_choice == 'both' }}
         uses: ubuntu/desktop-snaps@stable
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           repo: ${{ github.repository }}
           version-schema: 'v(\d+\.\d+\.\d+)'
+
       - name: Run desktop-snaps action (Rockcraft)
+        if: ${{ github.event_name == 'schedule' || github.event.inputs.workflow_choice == 'rockcraft' || github.event.inputs.workflow_choice == 'both' }}
         uses: ubuntu/desktop-snaps@stable
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           repo: ${{ github.repository }}
           rock-version-schema: 'v(\d+\.\d+\.\d+)'
           yaml-path: 'rock/rockcraft.yaml'
-
-  # update-rockcraft-yaml:
-  #   if: ${{ github.event_name == 'schedule' || github.event.inputs.workflow_choice == 'rockcraft' || github.event.inputs.workflow_choice == 'both' }}
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout this repo
-  #       uses: actions/checkout@v4
-  #     - name: Run desktop-snaps action (Rockcraft)
-  #       uses: ubuntu/desktop-snaps@stable
-  #       with:
-  #         token: ${{ secrets.GITHUB_TOKEN }}
-  #         repo: ${{ github.repository }}
-  #         rock-version-schema: 'v(\d+\.\d+\.\d+)'
-  #         yaml-path: 'rock/rockcraft.yaml'
