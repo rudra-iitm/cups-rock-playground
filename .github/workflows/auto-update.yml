@@ -2,7 +2,6 @@ name: Push new tag update to stable branch
 
 on:
   schedule:
-    # Daily at 7:09 UTC
     - cron: '9 7 * * *'
   workflow_dispatch:
     inputs:
@@ -24,7 +23,7 @@ jobs:
       - name: Checkout this repo
         uses: actions/checkout@v3
       - name: Pull latest changes
-        run: git pull origin main
+        run: git pull --rebase origin main
       - name: Run desktop-snaps action
         uses: ubuntu/desktop-snaps@stable
         with:
@@ -38,8 +37,8 @@ jobs:
     steps:
       - name: Checkout this repo
         uses: actions/checkout@v3
-      - name: Pull latest changes
-        run: git pull origin main
+      - name: Pull latest changes with rebase
+        run: git pull --rebase origin main
       - name: Run desktop-snaps action
         uses: ubuntu/desktop-snaps@stable
         with:
