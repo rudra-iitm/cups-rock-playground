@@ -22,16 +22,14 @@ jobs:
     steps:
       - name: Checkout this repo
         uses: actions/checkout@v3
-      - name: Pull latest changes from remote
-        run: |
-          git fetch origin
-          git rebase origin/main
       - name: Run desktop-snaps action (Snapcraft)
         uses: ubuntu/desktop-snaps@stable
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           repo: ${{ github.repository }}
           version-schema: 'v(\d+\.\d+\.\d+)'
+      - name: Sleep to allow commit to be pushed
+        run: sleep 15
 
   update-rockcraft-yaml:
     if: ${{ github.event_name == 'schedule' || github.event.inputs.workflow_choice == 'rockcraft' || github.event.inputs.workflow_choice == 'both' }}
@@ -39,10 +37,6 @@ jobs:
     steps:
       - name: Checkout this repo
         uses: actions/checkout@v3
-      - name: Pull latest changes from remote
-        run: |
-          git fetch origin
-          git rebase origin/main
       - name: Run desktop-snaps action (Rockcraft)
         uses: ubuntu/desktop-snaps@stable
         with:
@@ -50,3 +44,5 @@ jobs:
           repo: ${{ github.repository }}
           rock-version-schema: 'v(\d+\.\d+\.\d+)'
           yaml-path: 'rock/rockcraft.yaml'
+      - name: Sleep to allow commit to be pushed
+        run: sleep 15
