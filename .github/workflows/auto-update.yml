@@ -22,9 +22,11 @@ jobs:
     steps:
       - name: Checkout this repo
         uses: actions/checkout@v3
-      - name: Pull latest changes
-        run: git pull --rebase origin main
-      - name: Run desktop-snaps action
+      - name: Pull latest changes from remote
+        run: |
+          git fetch origin
+          git rebase origin/main
+      - name: Run desktop-snaps action (Snapcraft)
         uses: ubuntu/desktop-snaps@stable
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -37,9 +39,11 @@ jobs:
     steps:
       - name: Checkout this repo
         uses: actions/checkout@v3
-      - name: Pull latest changes with rebase
-        run: git pull --rebase origin main
-      - name: Run desktop-snaps action
+      - name: Pull latest changes from remote
+        run: |
+          git fetch origin
+          git rebase origin/main
+      - name: Run desktop-snaps action (Rockcraft)
         uses: ubuntu/desktop-snaps@stable
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
