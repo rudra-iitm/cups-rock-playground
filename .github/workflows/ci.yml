@@ -32,10 +32,6 @@ jobs:
           sudo snap install lxd
           sudo lxd init --auto
           sudo usermod -aG lxd $USER || sudo usermod -aG lxd $(whoami)
-          # Refresh session to apply group changes
-          newgrp lxd <<EONG
-          echo "Session refreshed for LXD group."
-          EONG
 
       - name: Build Snap
         run: |
