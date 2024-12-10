@@ -31,8 +31,7 @@ jobs:
           sudo snap install snapcraft --classic
           sudo snap install lxd
           sudo lxd init --auto
-          sudo usermod -aG lxd $USER || sudo usermod -aG lxd $(whoami)
 
       - name: Build Snap
         run: |
-          snapcraft snap -v
+          sudo snapcraft snap -v
