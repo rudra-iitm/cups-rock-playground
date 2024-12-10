@@ -26,12 +26,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Dependencies
-        run: |
-          sudo snap install snapcraft --classic
-          sudo snap install lxd
-          sudo lxd init --auto
 
       - name: Build Snap
-        run: |
-          sudo snapcraft snap -v
+        uses: snapcore/action-build@v1
+        id: snapcraft
