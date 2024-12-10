@@ -34,4 +34,4 @@ jobs:
 
       - name: Build Snap
         run: |
-          snapcraft snap -v
+          sudo snapcraft snap -v
