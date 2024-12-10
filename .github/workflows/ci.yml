@@ -29,6 +29,8 @@ jobs:
       - name: Install Dependencies
         run: |
           sudo snap install snapcraft --classic
+          sudo snap install lxd
+          lxd init --auto
 
       - name: Build Snap
         run: |
