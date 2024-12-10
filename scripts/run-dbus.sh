@@ -17,8 +17,7 @@ chown root:root /run/dbus
 echo "Starting dbus"
 
 # Start the dbus daemon in the foreground
-dbus-daemon --system --nofork --nopidfile &
-
+service dbus start
 # Check the status of the dbus service
 service dbus status || true
 
