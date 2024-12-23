@@ -1,34 +1,20 @@
-name: CI Pipeline for ps-printer-app
+name: Push new tag update to stable branch
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+  schedule:
+    # Daily for now
+    - cron: '9 7 * * *'
   workflow_dispatch:
 
 jobs:
-  # build-rock:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v4
-
-  #     - name: Pack with Rockcraft
-  #       uses: canonical/craft-actions/rockcraft-pack@main
-  #       id: rockcraft
-
-  build-snap:
+  update-snapcraft-yaml:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Log in to GitHub Packages
-        uses: docker/login-action@v3.2.0
+      - name: Checkout this repo
+        uses: actions/checkout@v3
+      - name: Run desktop-snaps action  
+        uses: ubuntu/desktop-snaps@stable
         with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repo: ${{ github.repository }}
+          version-schema: '^(\d{8})'
