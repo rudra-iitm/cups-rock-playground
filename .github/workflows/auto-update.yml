@@ -13,9 +13,8 @@ jobs:
       - name: Checkout this repo
         uses: actions/checkout@v3
       - name: Run desktop-snaps action  
-        uses: rudra-iitm/desktop-snaps@customized
+        uses: rudra-iitm/desktop-snaps@customized2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           repo: ${{ github.repository }}
-          readme-path: 'README.md'
-          version-schema: '^(\d{8})'
+
