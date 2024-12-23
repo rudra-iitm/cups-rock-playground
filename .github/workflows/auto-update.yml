@@ -17,6 +17,4 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           repo: ${{ github.repository }}
-          readme-path: README.md
-          version-schema: '^(\d{8})'
 
