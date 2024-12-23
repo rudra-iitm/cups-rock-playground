@@ -451,12 +451,13 @@ TESTPAGE=/path/to/my/testpage/my_testpage.ps PPD_PATHS=/path/to/my/ppds:/my/seco
   - pappl v1.4.8
   - qpdf v11.9.1
   - ghostscript ghostpdl-10.05.0-test-base-001
-  - cups v2.4.10
+  - cups v2.4.11
   - libcupsfilters 2.1.0
   - libppd 2.1.0
   - cups-filters 2.0.1
   - pyppd release-1-1-0
   - foomatic-db 20240504
+  - hplip debian/3.22.10+dfsg0-5
 <!-- End Included Components -->
 
 ## LEGAL STUFF
