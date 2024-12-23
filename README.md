@@ -1,4 +1,4 @@
-# PostScript Printer Application
+e# PostScript Printer Application
 
 ## INTRODUCTION
 
@@ -447,6 +447,7 @@ TESTPAGE=/path/to/my/testpage/my_testpage.ps PPD_PATHS=/path/to/my/ppds:/my/seco
 ```
 
 <!-- Begin Included Components -->
+
 <!-- End Included Components -->
 
 ## LEGAL STUFF
