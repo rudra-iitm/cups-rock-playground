@@ -446,6 +446,10 @@ Apple Raster, PWG Raster):
 TESTPAGE=/path/to/my/testpage/my_testpage.ps PPD_PATHS=/path/to/my/ppds:/my/second/place ./ps-printer-app server
 ```
 
+<!______>
+## Included Components
+<!______>
+
 ## LEGAL STUFF
 
 The PostScript Printer Application is Copyright © 2020 by Till Kamppeter.
