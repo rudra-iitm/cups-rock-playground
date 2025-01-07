@@ -446,7 +446,6 @@ Apple Raster, PWG Raster):
 TESTPAGE=/path/to/my/testpage/my_testpage.ps PPD_PATHS=/path/to/my/ppds:/my/second/place ./ps-printer-app server
 ```
 
-<!-- Begin Included Components -->
 ## Included Components
   - pappl v1.4.8
   - qpdf v11.9.1
